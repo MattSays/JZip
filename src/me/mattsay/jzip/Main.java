@@ -5,7 +5,10 @@ import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException{
+
+
+    public static void main(String[] args) throws Exception{
+        String localpath = Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
         if(args.length == 0){
             System.err.println("Unknown command. Please enter help for more information");
             return;
@@ -16,7 +19,7 @@ public class Main {
                     System.err.println("Arguments missing!");
                     break;
                 }
-                String filename = args[1];
+                String destination = args[1];
                 File[] files = new File[args.length-2];
                 for(int i = 2; i < args.length; i++){
                     files[i-2] = new File(args[i]);
@@ -26,7 +29,7 @@ public class Main {
                     }
                 }
                 System.out.println("Compressing....");
-                Jzip.compressFiles(files, filename,false);
+                Jzip.compressFiles(files, destination);
                 System.out.println(ChatColor.ANSI_GREEN + "Compressed all file successfully!");
                 break;
             case "decompress":
@@ -34,13 +37,18 @@ public class Main {
                     System.err.println("Arguments missing!");
                     break;
                 }
-                String file = args[1];
+                String file = args[2];
                 if(!new File(file).exists()){
                     System.err.println(file + " does not exist. Stopped decompressing process");
                     break;
                 }
+                String outpath = args[1];
+                if(!new File(outpath).exists()){
+                    System.err.println("this path does not exist. Stopped decompressing process");
+                    break;
+                }
                 System.out.println("Decompressing....");
-                Jzip.decompressFile(file,true);
+                Jzip.decompressFiles(outpath ,file);
                 System.out.println(ChatColor.ANSI_GREEN + "Decompressed all files  successfully!");
                 break;
             case "help":

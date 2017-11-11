@@ -3,6 +3,13 @@ package me.mattsay.jzip;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Main Class
+ *
+ * @author Mattia Sicoli
+ * @version 1.0
+ */
+
 public class Main {
 
 

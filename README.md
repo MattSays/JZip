@@ -4,7 +4,7 @@ A Simple library to comopress or decompress files.
 Compressing and Decompressing files is very simple with this library! Only one line to decompress your files!
 Debug informations included!
 
-<a href="https://koding.com/"> <img src="https://koding-cdn.s3.amazonaws.com/badges/made-with-koding/v1/koding_badge_RectangleColor.png" srcset="https://koding-cdn.s3.amazonaws.com/badges/made-with-koding/v1/koding_badge_RectangleColor.png 1x, https://koding-cdn.s3.amazonaws.com/badges/made-with-koding/v1/koding_badge_RectangleColor@2x.png 2x" alt="Made with Koding" /> </a>
+
 
 ## Decompressing Example
 

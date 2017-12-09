@@ -50,10 +50,6 @@ public class Main {
                     break;
                 }
                 String outpath = args[1];
-                if(!new File(outpath).exists()){
-                    System.err.println("this path does not exist. Stopped decompressing process");
-                    break;
-                }
                 System.out.println("Decompressing....");
                 Jzip.decompressFiles(outpath ,file);
                 System.out.println(ChatColor.ANSI_GREEN + "Decompressed all files  successfully!");

@@ -1,6 +1,7 @@
 package me.mattsay.jzip;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -13,7 +14,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class Jzip {
 
-    public static final int BUFFER = 4096;
+    public static final int BUFFER = 2048;
 
     /**
      * Returns all decompressed files from a compressed file
@@ -22,23 +23,21 @@ public class Jzip {
      * @throws IOException throws if the file does not exist
      */
     public static File[] decompressFiles(String outdir , String path) throws IOException {
-        File[] file;
-        int i = 0;
+        if(!new File(outdir).exists())new File(outdir).mkdir();
+        ArrayList<File> files = new ArrayList<>();
         FileInputStream fis = new FileInputStream(path);
         ZipInputStream zis = new ZipInputStream(new BufferedInputStream(fis));
         ZipEntry entry;
-        file = new File[zis.available()];
         while((entry = zis.getNextEntry()) != null){
             if(entry.isDirectory()){
                 new File(outdir, entry.getName()).mkdir();
                 continue;
             }
-            file[i] = decompressFile(entry, zis, outdir);
-            i++;
+            files.add(decompressFile(entry, zis, outdir));
         }
         zis.closeEntry();
         zis.close();
-        return file;
+        return files.toArray(new File[files.size()]);
     }
 
     /**

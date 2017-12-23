@@ -36,7 +36,7 @@ public class Main {
                     }
                 }
                 System.out.println("Compressing....");
-                Jzip.compressFiles(files, destination);
+                Jzip.compressFiles(files, destination, true);
                 System.out.println(ChatColor.ANSI_GREEN + "Compressed all file successfully!");
                 break;
             case "decompress":
@@ -51,7 +51,7 @@ public class Main {
                 }
                 String outpath = args[1];
                 System.out.println("Decompressing....");
-                Jzip.decompressFiles(outpath ,file);
+                Jzip.decompressFiles(outpath ,file, true);
                 System.out.println(ChatColor.ANSI_GREEN + "Decompressed all files  successfully!");
                 break;
             case "help":

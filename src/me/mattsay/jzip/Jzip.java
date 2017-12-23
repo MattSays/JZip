@@ -22,7 +22,7 @@ public class Jzip {
      * @param path the path of the file to convert
      * @throws IOException throws if the file does not exist
      */
-    public static File[] decompressFiles(String outdir , String path) throws IOException {
+    public static File[] decompressFiles(String outdir , String path, boolean debug) throws IOException {
         if(!new File(outdir).exists())new File(outdir).mkdir();
         ArrayList<File> files = new ArrayList<>();
         FileInputStream fis = new FileInputStream(path);
@@ -33,7 +33,7 @@ public class Jzip {
                 new File(outdir, entry.getName()).mkdir();
                 continue;
             }
-            files.add(decompressFile(entry, zis, outdir));
+            files.add(decompressFile(entry, zis, outdir, debug));
         }
         zis.closeEntry();
         zis.close();
@@ -47,7 +47,7 @@ public class Jzip {
      * @param outdir path where the program decompress the file
      * @throws IOException throws if the file does not exist
      */
-    private static File decompressFile(ZipEntry entry,ZipInputStream zis, String outdir) throws IOException{
+    private static File decompressFile(ZipEntry entry,ZipInputStream zis, String outdir, boolean debug) throws IOException{
         File file = new File(outdir, entry.getName());
         BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file),BUFFER);
         byte[] data = new byte[BUFFER];
@@ -55,14 +55,19 @@ public class Jzip {
         double progress = 0,changedpercent = 0,percent = 0;
         while ((count = zis.read(data)) != -1){
             bos.write(data, 0 , count);
-            progress+=count;
-            percent = ((100 * progress) / entry.getSize());
-            percent = Math.round(percent);
-            if(percent != changedpercent)System.out.println(ChatColor.ANSI_CYAN + "Decompressing Progress: " + (int)percent + "%");
-            changedpercent = percent;
+            if(debug) {
+                progress += count;
+                percent = ((100 * progress) / entry.getSize());
+                percent = Math.round(percent);
+                if (percent != changedpercent)
+                    System.out.println(ChatColor.ANSI_CYAN + "Decompressing Progress: " + (int) percent + "%");
+                changedpercent = percent;
+            }
         }
-        System.out.println(Character.MIN_VALUE);
-        System.out.println(ChatColor.ANSI_CYAN + "Decompressed: \n  File: " + entry.getName() + "\n  Size: " + (entry.getSize()<1024 ? entry.getSize() + " B" : entry.getSize()/1024 + " KB"));
+        if(debug) {
+            System.out.println(Character.MIN_VALUE);
+            System.out.println(ChatColor.ANSI_CYAN + "Decompressed: \n  File: " + entry.getName() + "\n  Size: " + (entry.getSize() < 1024 ? entry.getSize() + " B" : entry.getSize() / 1024 + " KB"));
+        }
         bos.close();
         return file;
     }
@@ -73,7 +78,7 @@ public class Jzip {
      * @param destination the path where the program compress the file
      * @throws IOException throws if the file does not exist
      */
-    public static File compressFiles(File[] files, String destination) throws IOException{
+    public static File compressFiles(File[] files, String destination, boolean debug) throws IOException{
         File file = new File(destination);
         FileOutputStream fos = new FileOutputStream(file);
         ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(fos));
@@ -82,7 +87,7 @@ public class Jzip {
                 f.mkdir();
                 continue;
             }
-            compressFile(f,zos);
+            compressFile(f,zos, debug);
         }
         zos.close();
         fos.close();
@@ -95,7 +100,7 @@ public class Jzip {
      * @param zos Writes all data
      * @throws IOException throws if the file does not exist
      */
-    private static void compressFile(File f, ZipOutputStream zos) throws IOException{
+    private static void compressFile(File f, ZipOutputStream zos, boolean debug) throws IOException{
         FileInputStream fis = new FileInputStream(f.getPath());
         ZipEntry entry = new ZipEntry(f.getName());
         zos.putNextEntry(entry);
@@ -104,15 +109,20 @@ public class Jzip {
         double progress = 0,changedpercent = 0,percent = 0;
         while ((count = fis.read(data)) != -1){
             zos.write(data, 0 , count);
-            progress+=count;
-            percent = ((100 * progress) / f.length());
-            percent = Math.round(percent);
-            if(percent != changedpercent)System.out.println(ChatColor.ANSI_CYAN + "Compressing Progress: " + (int)percent + "%");
-            changedpercent = percent;
+            if(debug) {
+                progress += count;
+                percent = ((100 * progress) / f.length());
+                percent = Math.round(percent);
+                if (percent != changedpercent)
+                    System.out.println(ChatColor.ANSI_CYAN + "Compressing Progress: " + (int) percent + "%");
+                changedpercent = percent;
+            }
         }
-        String size = (f.length()<1024 ? f.length() + " B" : f.length()/1024 + " KB");
-        String estimated_size = (f.length()<1024 ? (double)(f.length()*0.5)+ " B"   : (double)((f.length()/1024)*0.5) + " KB");
-        System.out.println("\n" + ChatColor.ANSI_CYAN + "Compressed: \n  File: " + f.getName() + "\n  Size: " + size + "\n  Estimated Compress Size: " + estimated_size);
+        if(debug) {
+            String size = (f.length() < 1024 ? f.length() + " B" : f.length() / 1024 + " KB");
+            String estimated_size = (f.length() < 1024 ? (double) (f.length() * 0.5) + " B" : (double) ((f.length() / 1024) * 0.5) + " KB");
+            System.out.println("\n" + ChatColor.ANSI_CYAN + "Compressed: \n  File: " + f.getName() + "\n  Size: " + size + "\n  Estimated Compress Size: " + estimated_size);
+        }
         fis.close();
     }
 }
